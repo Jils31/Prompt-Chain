@@ -2,12 +2,16 @@ import "./src/config/redis.js";
 import express from 'express';
 import cors from 'cors';
 
+import userRouter from "./routes/user.route.js";
+import chainRouter from "./routes/chain.routes.js";
+
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-
+app.use('/api/users',userRouter )
+app.use('/api/chains', chainRouter)
 
 const PORT = process.env.PORT || 5000
 
