@@ -8,6 +8,7 @@ export async function getUser(req,res){
         const users = await prisma.user.findMany({})
         return res.status(200).json(users)
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -24,6 +25,7 @@ export async function postUser(req,res){
         return res.status(201).json(newUser)
         
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -38,6 +40,7 @@ export async function getUserbyId(req,res){
         return res.status(200).json(user)
         
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -54,6 +57,7 @@ export async function updateUser(req,res){
 
         return res.status(200).json(updateUser)
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -64,6 +68,7 @@ export async function deleteUser(req,res){
         await prisma.user.delete({where:{id}})
         return res.status(200).json({message:"User deleted successfully"})
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }

@@ -8,6 +8,7 @@ export async function getChain(req,res){
         const chains = await prisma.promptChain.findMany({})
         return res.status(200).json(chains)
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -24,6 +25,7 @@ export async function postChain(req,res){
         const newChain = await prisma.promptChain.create({data:{title, description, nodes, edges, userId}})
         return res.status(201).json(newChain)
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -38,6 +40,7 @@ export async function getChainbyId(req,res){
         return res.status(200).json(chain)
         
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
@@ -53,17 +56,19 @@ export async function updateChain(req,res){
         const updatedChain = await prisma.promptChain.update({where:{id}, data:{title, description, nodes, edges, userId}})
         return res.status(200).json(updatedChain)
     }catch(error){
+        console.error("Execution error:", error)
         return res.status(500).json({message:"Internal server error"})
     }
 }
 
-// export async function deleteUser(req,res){
-//     try{
-//         const id = req.params.id
-//         await prisma.user.delete({where:{id}})
-//         return res.status(200).json({message:"User deleted successfully"})
-//     }catch(error){
-//         return res.status(500).json({message:"Internal server error"})
-//     }
-// }
+export async function deleteChain(req,res){
+    try{
+        const id = req.params.id
+        await prisma.promptChain.delete({where:{id}})
+        return res.status(200).json({message:"Chain deleted successfully"})
+    }catch(error){
+        console.error("Execution error:", error)
+        return res.status(500).json({message:"Internal server error"})
+    }
+}
 
