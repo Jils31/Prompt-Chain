@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ChainList from "./pages/ChainList";
 import ChainDetail from "./pages/ChainDetail";
+import NewChain from "./pages/NewChain";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           path="/chains/:chainId"
           element={<ChainDetailWrapper />}
         />
+
+        <Route path="/chains/new" element={<NewChain />} />
       </Routes>
     </Router>
   );
