@@ -5,6 +5,7 @@ import cors from 'cors';
 import userRouter from "./routes/user.route.js";
 import chainRouter from "./routes/chain.routes.js";
 import executionRouter from "./routes/execution.routes.js";
+import chainRunnerRoutes from "./src/routes/chainRunnerRoutes.js"
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/api/users',userRouter )
 app.use('/api/chains', chainRouter)
 app.use('/api/execute', executionRouter)
+app.use('/api', chainRunnerRoutes);
 
 const PORT = process.env.PORT || 5000
 
