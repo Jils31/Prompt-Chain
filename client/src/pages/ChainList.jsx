@@ -3,6 +3,9 @@ import { getChain } from "../api/chains";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function ChainList() {
+
+  //We have used useQuery here which will cache the data and it is used for fetching the data from the backend.
+  //It have in-built loading and error states.
   
   const navigate = useNavigate();
   const {

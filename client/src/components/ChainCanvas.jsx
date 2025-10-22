@@ -10,7 +10,6 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-/* 🔹 Custom Editable Node component */
 const EditableNode = memo(function EditableNode({ id, data, isConnectable }) {
   const [editing, setEditing] = useState(false);
   const [label, setLabel] = useState(data.label || "");
@@ -76,7 +75,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     type: "editableNode",
     data: {
       label: node.text || node.prompt || "Node " + (index + 1),
-      onLabelChange: () => {}, // placeholder, replaced later
+      onLabelChange: () => {}
     },
     position: node.position || { x: index * 250, y: 100 },
   }));
@@ -92,7 +91,6 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     }))
   );
 
-  /* 🔸 When user connects nodes */
   const onConnect = useCallback(
     (params) => {
       const newEdges = addEdge(
@@ -117,7 +115,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     [reactFlowEdges, reactFlowNodes, setEdges, onChange]
   );
 
-  /* 🔸 Add new node */
+
   const addNode = useCallback(() => {
     const newNodeId = `node-${Date.now()}`;
     const newNode = {
@@ -129,7 +127,6 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     setNodes((nds) => [...nds, newNode]);
   }, [reactFlowNodes, setNodes]);
 
-  /* 🔸 Update label text */
   const handleLabelChange = useCallback(
     (nodeId, newLabel) => {
       setNodes((nds) =>
@@ -153,7 +150,6 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     [reactFlowNodes, reactFlowEdges, onChange, setNodes]
   );
 
-  /* 🔸 Keep positions synced */
   const handleNodesChange = useCallback(
     (changes) => {
       onNodesChange(changes);
@@ -176,7 +172,6 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     [onNodesChange, reactFlowNodes, reactFlowEdges, onChange]
   );
 
-  /* 🔸 Inject live handler into data so EditableNode can call it */
   const preparedNodes = reactFlowNodes.map((n) => ({
     ...n,
     data: { ...n.data, onLabelChange: handleLabelChange },
