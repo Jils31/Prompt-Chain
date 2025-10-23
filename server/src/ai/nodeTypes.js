@@ -1,33 +1,53 @@
+/**
+ * Defines the types of nodes available in the chain system
+ */
 export const NODE_TYPES = {
-  INPUT: 'input',
-  LLM: 'llm',
-  OUTPUT: 'output',
-  TRANSFORM: 'transform'
+  INPUT: 'input',        // Accepts user input/variables
+  LLM: 'llm',           // Calls Gemini with context
+  TRANSFORM: 'transform', // Transforms/formats data
+  OUTPUT: 'output',      // Final output formatting
+  MERGE: 'merge',        // Merges multiple inputs (future)
 };
 
-export const NODE_METADATA = {
+/**
+ * Node type metadata for validation and UI
+ */
+export const NODE_TYPE_METADATA = {
   [NODE_TYPES.INPUT]: {
-    type: NODE_TYPES.INPUT,
-    icon: '📥',
-    description: 'Accepts user input',
-    color: '#10b981'
+    label: 'Input',
+    description: 'Accepts input variables from the user',
+    requiresLLM: false,
+    canHaveMultipleInputs: false,
   },
   [NODE_TYPES.LLM]: {
-    type: NODE_TYPES.LLM,
-    icon: '🤖',
-    description: 'Calls Gemini AI',
-    color: '#3b82f6'
-  },
-  [NODE_TYPES.OUTPUT]: {
-    type: NODE_TYPES.OUTPUT,
-    icon: '📤',
-    description: 'Returns final output',
-    color: '#8b5cf6'
+    label: 'LLM',
+    description: 'Processes text using Gemini AI with context from previous nodes',
+    requiresLLM: true,
+    canHaveMultipleInputs: true,
   },
   [NODE_TYPES.TRANSFORM]: {
-    type: NODE_TYPES.TRANSFORM,
-    icon: '⚙️',
-    description: 'Transforms data',
-    color: '#f59e0b'
-  }
+    label: 'Transform',
+    description: 'Transforms or formats data without using LLM',
+    requiresLLM: false,
+    canHaveMultipleInputs: true,
+  },
+  [NODE_TYPES.OUTPUT]: {
+    label: 'Output',
+    description: 'Formats the final output',
+    requiresLLM: false,
+    canHaveMultipleInputs: true,
+  },
+  [NODE_TYPES.MERGE]: {
+    label: 'Merge',
+    description: 'Merges multiple previous outputs (future feature)',
+    requiresLLM: false,
+    canHaveMultipleInputs: true,
+  },
 };
+
+/**
+ * Validates if a node type is valid
+ */
+export function isValidNodeType(type) {
+  return Object.values(NODE_TYPES).includes(type);
+}

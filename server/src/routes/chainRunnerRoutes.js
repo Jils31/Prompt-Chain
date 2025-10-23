@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/run-chain/:chainId', async (req, res) => {
   try {
     const { chainId } = req.params;
-    const inputValues = req.body || {};
+    const inputValues = req.body.inputValues || {};
     
     console.log(`Running chain ${chainId} with inputs:`, inputValues);
     

@@ -1,7 +1,10 @@
 import api from '../api/client'
 
-export const runChain = async (chainId) => {
-    const res = await api.post(`/execute/${chainId}`)
+export const runChain = async (chainId, inputValues = { topic: '' }) => {
+    const res = await api.post(`/run-chain/${chainId}`, {
+        chainId,
+        inputValues
+    })
     return res.data
 }
 

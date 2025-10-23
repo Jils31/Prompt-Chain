@@ -15,10 +15,12 @@ const EditableNode = memo(function EditableNode({ id, data, isConnectable }) {
   const [label, setLabel] = useState(data.label || "");
 
   const handleDoubleClick = () => setEditing(true);
+  
   const handleBlur = () => {
     setEditing(false);
     data.onLabelChange(id, label);
   };
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -27,22 +29,33 @@ const EditableNode = memo(function EditableNode({ id, data, isConnectable }) {
     }
   };
 
+  const getNodeColor = () => {
+      return "#6b7280"; 
+  };
+
   return (
     <div
-      onDoubleClick={handleDoubleClick}
       style={{
-        padding: "10px 15px",
-        border: "1px solid #94a3b8",
+        padding: "12px 16px",
+        border: `1px solid ${getNodeColor()}`,
         borderRadius: "8px",
         background: "white",
-        minWidth: "120px",
+        minWidth: "160px",
         textAlign: "center",
         fontSize: "14px",
         cursor: editing ? "text" : "grab",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
       }}
     >
-      <Handle type="target" position="top" isConnectable={isConnectable} />
+      <Handle 
+        type="target" 
+        position="top" 
+        isConnectable={isConnectable}
+        style={{ background: getNodeColor() }}
+      />
+
+
+      {/* Editable Label */}
       {editing ? (
         <input
           type="text"
@@ -57,12 +70,28 @@ const EditableNode = memo(function EditableNode({ id, data, isConnectable }) {
             outline: "none",
             fontSize: "14px",
             textAlign: "center",
+            marginBottom: "8px",
           }}
         />
       ) : (
-        <div>{label}</div>
+        <div 
+          onDoubleClick={handleDoubleClick}
+          style={{ 
+            marginBottom: "8px",
+            fontWeight: "500",
+            minHeight: "20px",
+          }}
+        >
+          {label}
+        </div>
       )}
-      <Handle type="source" position="bottom" isConnectable={isConnectable} />
+
+      <Handle 
+        type="source" 
+        position="bottom" 
+        isConnectable={isConnectable}
+        style={{ background: getNodeColor() }}
+      />
     </div>
   );
 });
@@ -75,7 +104,9 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
     type: "editableNode",
     data: {
       label: node.text || node.prompt || "Node " + (index + 1),
-      onLabelChange: () => {}
+      type: node.type || "llm",
+      onLabelChange: () => {},
+      onTypeChange: () => {},
     },
     position: node.position || { x: index * 250, y: 100 },
   }));
@@ -84,12 +115,28 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(
     edges.map((edge, index) => ({
       id: edge.id || `edge-${index}`,
-      source: edge.from || edge.source,
-      target: edge.to || edge.target,
+      source: edge.source || edge.from,  // ✅ Handle both formats
+      target: edge.target || edge.to,    // ✅ Handle both formats
       animated: true,
       markerEnd: { type: MarkerType.ArrowClosed },
     }))
   );
+
+  const notifyChange = useCallback((updatedNodes, updatedEdges) => {
+    if (onChange) {
+      const backendNodes = updatedNodes.map((n) => ({
+        id: n.id,
+        text: n.data.label,
+        type: n.data.type || "llm",
+        position: n.position,
+      }));
+      const backendEdges = updatedEdges.map((e) => ({
+        source: e.source,  // ✅ Use "source" not "from"
+        target: e.target,  // ✅ Use "target" not "to"
+      }));
+      onChange({ nodes: backendNodes, edges: backendEdges });
+    }
+  }, [onChange]);
 
   const onConnect = useCallback(
     (params) => {
@@ -98,56 +145,49 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
         reactFlowEdges
       );
       setEdges(newEdges);
-
-      if (onChange) {
-        const backendNodes = reactFlowNodes.map((n) => ({
-          id: n.id,
-          text: n.data.label,
-          position: n.position,
-        }));
-        const backendEdges = newEdges.map((e) => ({
-          from: e.source,
-          to: e.target,
-        }));
-        onChange({ nodes: backendNodes, edges: backendEdges });
-      }
+      notifyChange(reactFlowNodes, newEdges);
     },
-    [reactFlowEdges, reactFlowNodes, setEdges, onChange]
+    [reactFlowEdges, reactFlowNodes, setEdges, notifyChange]
   );
-
 
   const addNode = useCallback(() => {
     const newNodeId = `node-${Date.now()}`;
     const newNode = {
       id: newNodeId,
       type: "editableNode",
-      data: { label: `New Node ${reactFlowNodes.length + 1}` },
+      data: { 
+        label: `New Node ${reactFlowNodes.length + 1}`,
+        type: "llm",
+        onLabelChange: () => {},
+        onTypeChange: () => {},
+      },
       position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
     };
-    setNodes((nds) => [...nds, newNode]);
-  }, [reactFlowNodes, setNodes]);
+    const updatedNodes = [...reactFlowNodes, newNode];
+    setNodes(updatedNodes);
+    notifyChange(updatedNodes, reactFlowEdges);
+  }, [reactFlowNodes, reactFlowEdges, setNodes, notifyChange]);
 
   const handleLabelChange = useCallback(
     (nodeId, newLabel) => {
-      setNodes((nds) =>
-        nds.map((n) =>
-          n.id === nodeId ? { ...n, data: { ...n.data, label: newLabel } } : n
-        )
+      const updatedNodes = reactFlowNodes.map((n) =>
+        n.id === nodeId ? { ...n, data: { ...n.data, label: newLabel } } : n
       );
-      if (onChange) {
-        const backendNodes = reactFlowNodes.map((n) => ({
-          id: n.id,
-          text: n.id === nodeId ? newLabel : n.data.label,
-          position: n.position,
-        }));
-        const backendEdges = reactFlowEdges.map((e) => ({
-          from: e.source,
-          to: e.target,
-        }));
-        onChange({ nodes: backendNodes, edges: backendEdges });
-      }
+      setNodes(updatedNodes);
+      notifyChange(updatedNodes, reactFlowEdges);
     },
-    [reactFlowNodes, reactFlowEdges, onChange, setNodes]
+    [reactFlowNodes, reactFlowEdges, setNodes, notifyChange]
+  );
+
+  const handleTypeChange = useCallback(
+    (nodeId, newType) => {
+      const updatedNodes = reactFlowNodes.map((n) =>
+        n.id === nodeId ? { ...n, data: { ...n.data, type: newType } } : n
+      );
+      setNodes(updatedNodes);
+      notifyChange(updatedNodes, reactFlowEdges);
+    },
+    [reactFlowNodes, reactFlowEdges, setNodes, notifyChange]
   );
 
   const handleNodesChange = useCallback(
@@ -156,25 +196,20 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
       const hasPositionChange = changes.some(
         (c) => c.type === "position" && !c.dragging
       );
-      if (hasPositionChange && onChange) {
-        const backendNodes = reactFlowNodes.map((n) => ({
-          id: n.id,
-          text: n.data.label,
-          position: n.position,
-        }));
-        const backendEdges = reactFlowEdges.map((e) => ({
-          from: e.source,
-          to: e.target,
-        }));
-        onChange({ nodes: backendNodes, edges: backendEdges });
+      if (hasPositionChange) {
+        notifyChange(reactFlowNodes, reactFlowEdges);
       }
     },
-    [onNodesChange, reactFlowNodes, reactFlowEdges, onChange]
+    [onNodesChange, reactFlowNodes, reactFlowEdges, notifyChange]
   );
 
   const preparedNodes = reactFlowNodes.map((n) => ({
     ...n,
-    data: { ...n.data, onLabelChange: handleLabelChange },
+    data: { 
+      ...n.data, 
+      onLabelChange: handleLabelChange,
+      onTypeChange: handleTypeChange,
+    },
   }));
 
   return (
@@ -230,7 +265,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
         style={{
           position: "absolute",
           bottom: "10px",
-          left: "1240px",
+          right: "10px",
           background: "white",
           padding: "8px 12px",
           borderRadius: "6px",
@@ -239,7 +274,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
           border: "1px solid #e2e8f0",
         }}
       >
-        💡 Double-click a node to edit its label
+        💡 Double-click to edit | Select node type from dropdown
       </div>
     </div>
   );
