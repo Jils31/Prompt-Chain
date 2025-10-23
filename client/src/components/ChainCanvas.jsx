@@ -226,7 +226,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
           onClick={addNode}
           style={{
             padding: "10px 20px",
-            background: "#3b82f6",
+            background: "#101A29",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -235,8 +235,8 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
             fontWeight: "600",
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           }}
-          onMouseOver={(e) => (e.target.style.background = "#2563eb")}
-          onMouseOut={(e) => (e.target.style.background = "#3b82f6")}
+          onMouseOver={(e) => (e.target.style.background = "#0B252B")}
+          onMouseOut={(e) => (e.target.style.background = "#101A29")}
         >
           + Add Node
         </button>
@@ -264,11 +264,11 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
           position: "absolute",
           bottom: "10px",
           right: "10px",
-          background: "white",
+          background: "#101A29",
           padding: "8px 12px",
           borderRadius: "6px",
           fontSize: "12px",
-          color: "#64748b",
+          color: "white",
           border: "1px solid #e2e8f0",
         }}
       >
