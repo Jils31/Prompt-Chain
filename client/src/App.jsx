@@ -11,6 +11,8 @@ import ChainList from "./pages/ChainList";
 import ChainDetail from "./pages/ChainDetail";
 import NewChain from "./pages/NewChain";
 import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login"
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element = {<Signup />} />
           <Route path="/chains" element={<ChainList />} />
 
           <Route path="/chains/:chainId" element={<ChainDetailWrapper />} />
