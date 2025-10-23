@@ -54,43 +54,50 @@ export default function ChainDetail({ chainId }) {
   const displayData = localChainData || { nodes: chain.nodes, edges: chain.edges };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">{chain.title}</h2>
-        <button
-          onClick={handleSave}
-          disabled={!hasChanges || updateMutation.isLoading}
-          className={`px-4 py-2 rounded font-medium ${
-            hasChanges
-              ? "bg-blue-500 text-white hover:bg-blue-600"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-          }`}
-        >
-          {updateMutation.isLoading ? "Saving..." : "Save Changes"}
-        </button>
+  <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-teal-950 py-12 px-6">
+  <div className="max-w-7xl mx-auto">
+    <div className="flex justify-between items-center mb-6">
+      <div>
+        <h2 className="text-4xl font-bold text-white mb-2">{chain.title}</h2>
+        <p className="text-gray-400 text-lg">{chain.description}</p>
       </div>
-      
-      <p className="mb-4 text-gray-600">{chain.description}</p>
+      <button
+        onClick={handleSave}
+        disabled={!hasChanges || updateMutation.isLoading}
+        className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+          hasChanges
+            ? "bg-white text-black hover:bg-gray-200"
+            : "bg-gray-800 text-gray-500 cursor-not-allowed"
+        }`}
+      >
+        {updateMutation.isLoading ? "Saving..." : "Save Changes"}
+      </button>
+    </div>
 
+    <div className="mb-6">
       <ChainCanvas 
         nodes={displayData.nodes} 
         edges={displayData.edges}
         onChange={handleCanvasChange}
       />
-
-      <div className="mt-4">
-        <ChainRunButton
-          chainId={chain.id}
-          onResult={(results) => setExecutionResults(results)}
-        />
-      </div>
-
-      {executionResults && (
-        <div className="mt-4 p-4 border rounded bg-gray-50">
-          <h3 className="font-semibold mb-2">Execution Results:</h3>
-          <pre className="text-sm overflow-auto">{JSON.stringify(executionResults, null, 2)}</pre>
-        </div>
-      )}
     </div>
+
+    <div className="mb-6">
+      <ChainRunButton
+        chainId={chain.id}
+        onResult={(results) => setExecutionResults(results)}
+      />
+    </div>
+
+    {executionResults && (
+      <div className="p-6 border border-gray-800 rounded-xl bg-gray-900">
+        <h3 className="text-xl font-semibold mb-4 text-white">Execution Results:</h3>
+        <pre className="text-sm overflow-auto text-gray-300 bg-gray-800 p-4 rounded-lg">
+          {JSON.stringify(executionResults, null, 2)}
+        </pre>
+      </div>
+    )}
+  </div>
+</div>
   );
 }

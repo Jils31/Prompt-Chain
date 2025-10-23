@@ -1,17 +1,10 @@
-/**
- * Defines the types of nodes available in the chain system
- */
 export const NODE_TYPES = {
-  INPUT: 'input',        // Accepts user input/variables
-  LLM: 'llm',           // Calls Gemini with context
-  TRANSFORM: 'transform', // Transforms/formats data
-  OUTPUT: 'output',      // Final output formatting
-  MERGE: 'merge',        // Merges multiple inputs (future)
+  INPUT: 'input',       
+  TRANSFORM: 'transform',
+  OUTPUT: 'output',     
+  MERGE: 'merge',    
 };
 
-/**
- * Node type metadata for validation and UI
- */
 export const NODE_TYPE_METADATA = {
   [NODE_TYPES.INPUT]: {
     label: 'Input',
@@ -45,9 +38,6 @@ export const NODE_TYPE_METADATA = {
   },
 };
 
-/**
- * Validates if a node type is valid
- */
 export function isValidNodeType(type) {
   return Object.values(NODE_TYPES).includes(type);
 }

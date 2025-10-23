@@ -16,15 +16,12 @@ export default function ChainRunButton({ chainId }) {
     }
   });
 
-  // Format text to render markdown-like formatting
   const formatText = (text) => {
     if (!text) return '';
     
-    // Split by double newlines for paragraphs
     const paragraphs = text.split('\n\n');
     
     return paragraphs.map((para, index) => {
-      // Check if it's a heading (starts with ** or #)
       if (para.trim().startsWith('**') && para.trim().endsWith('**')) {
         const headingText = para.replace(/\*\*/g, '').trim();
         return (
@@ -34,7 +31,6 @@ export default function ChainRunButton({ chainId }) {
         );
       }
       
-      // Check for bullet points
       if (para.trim().startsWith('*') || para.trim().startsWith('-')) {
         const items = para.split('\n').filter(item => item.trim());
         return (
@@ -48,7 +44,6 @@ export default function ChainRunButton({ chainId }) {
         );
       }
       
-      // Regular paragraph
       return (
         <p key={index} className="text-gray-700 leading-relaxed mb-4">
           {para.replace(/\*\*/g, '')}
@@ -106,10 +101,8 @@ export default function ChainRunButton({ chainId }) {
         </div>
       </div>
 
-      {/* Results Display Section */}
       {results && (
         <div className="space-y-6">
-          {/* Execution Summary */}
           <div className="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 rounded-xl shadow-lg p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-bold text-gray-800">Execution Complete</h3>
@@ -138,8 +131,6 @@ export default function ChainRunButton({ chainId }) {
               </div>
             </div>
           </div>
-
-          {/* Final Output */}
           {results.finalOutput && (
             <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200">
               <div className="flex items-center gap-2 mb-6">
@@ -152,7 +143,6 @@ export default function ChainRunButton({ chainId }) {
             </div>
           )}
 
-          {/* Execution Steps - With Output */}
           {results.logs && results.logs.length > 0 && (
             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
               <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
@@ -173,7 +163,6 @@ export default function ChainRunButton({ chainId }) {
                     key={log.nodeId} 
                     className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    {/* Step Header */}
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-gray-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -197,7 +186,6 @@ export default function ChainRunButton({ chainId }) {
                       </div>
                     </div>
 
-                    {/* Step Output */}
                     {log.output && (
                       <div className="p-4 bg-white">
                         <div className="prose prose-sm max-w-none">

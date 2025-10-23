@@ -54,8 +54,6 @@ const EditableNode = memo(function EditableNode({ id, data, isConnectable }) {
         style={{ background: getNodeColor() }}
       />
 
-
-      {/* Editable Label */}
       {editing ? (
         <input
           type="text"
@@ -115,8 +113,8 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
   const [reactFlowEdges, setEdges, onEdgesChange] = useEdgesState(
     edges.map((edge, index) => ({
       id: edge.id || `edge-${index}`,
-      source: edge.source || edge.from,  // ✅ Handle both formats
-      target: edge.target || edge.to,    // ✅ Handle both formats
+      source: edge.source || edge.from,  
+      target: edge.target || edge.to,   
       animated: true,
       markerEnd: { type: MarkerType.ArrowClosed },
     }))
@@ -131,8 +129,8 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
         position: n.position,
       }));
       const backendEdges = updatedEdges.map((e) => ({
-        source: e.source,  // ✅ Use "source" not "from"
-        target: e.target,  // ✅ Use "target" not "to"
+        source: e.source,  
+        target: e.target,  
       }));
       onChange({ nodes: backendNodes, edges: backendEdges });
     }
@@ -274,7 +272,7 @@ export default function ChainCanvas({ nodes, edges, onChange }) {
           border: "1px solid #e2e8f0",
         }}
       >
-        💡 Double-click to edit | Select node type from dropdown
+        💡 Double-click to edit the node
       </div>
     </div>
   );

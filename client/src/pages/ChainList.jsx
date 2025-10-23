@@ -3,10 +3,6 @@ import { getChain } from "../api/chains";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function ChainList() {
-
-  //We have used useQuery here which will cache the data and it is used for fetching the data from the backend.
-  //It have in-built loading and error states.
-  
   const navigate = useNavigate();
   const {
     data: chains = [],
@@ -17,30 +13,53 @@ export default function ChainList() {
     queryFn: getChain,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading chains</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-teal-950 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-teal-950 flex items-center justify-center">
+        <div className="text-red-400 text-xl">Error loading chains</div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <button
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-        onClick={() => navigate("/chains/new")}
-      >
-        + Create New Chain
-      </button>
-      <div className="p-4">
-        {chains.map((chain) => (
-          <div key={chain.id} className="p-2 border mb-2 rounded">
-            <Link
-              to={`/chains/${chain.id}`}
-              className="font-bold text-blue-600"
-            >
-              {chain.title}
-            </Link>
-            <p>{chain.description}</p>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-teal-950">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="flex justify-between items-center mb-12">
+          <div>
+            <h1 className="text-5xl font-bold text-white mb-3">Your AI Workflows</h1>
+            <p className="text-gray-300 text-lg">Manage and execute your prompt chains</p>
           </div>
-        ))}
+          <button
+            className="px-6 py-3 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all shadow-lg hover:shadow-xl"
+            onClick={() => navigate("/chains/new")}
+          >
+            + Create New Chain
+          </button>
+        </div>
+
+        <div className="grid gap-5">
+          {chains.map((chain) => (
+            <Link
+              key={chain.id}
+              to={`/chains/${chain.id}`}
+              className="block bg-gray-900 bg-opacity-60 backdrop-blur-sm border border-gray-700 rounded-xl p-6 hover:bg-gray-800 hover:bg-opacity-80 hover:border-teal-700 transition-all hover:shadow-2xl group"
+            >
+              <h3 className="text-2xl font-semibold text-white mb-3 group-hover:text-teal-400 transition-colors">
+                {chain.title}
+              </h3>
+              <p className="text-gray-300 text-base leading-relaxed">{chain.description}</p>
+            </Link>
+          ))}
+        </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import ChainList from "./pages/ChainList";
 import ChainDetail from "./pages/ChainDetail";
 import NewChain from "./pages/NewChain";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <Toaster position="top-right" reverseOrder={false} />
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/chains" replace />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/chains" element={<ChainList />} />
 
           <Route path="/chains/:chainId" element={<ChainDetailWrapper />} />
