@@ -13,6 +13,8 @@ export default function ChainList() {
     queryFn: getChain,
   });
 
+  console.log("Chains data:", chains);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-teal-950 flex items-center justify-center">
