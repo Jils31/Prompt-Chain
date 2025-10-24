@@ -22,10 +22,10 @@ export async function logIn(req, res) {
     const token = await genToken(user.id);
     res.cookie("token", token, {
       httpOnly: true,
-      // sameSite: true,
+      sameSite: 'none',
+      secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
-
     console.log(token)
 
     return res.status(200).json({ message: "Sign in successful", user });
