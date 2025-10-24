@@ -5,7 +5,8 @@ const prisma = new PrismaClient()
 
 export async function getChain(req,res){
     try{
-        const chains = await prisma.promptChain.findMany({})
+        const userId = req.userId
+        const chains = await prisma.promptChain.findMany({where:{userId}})
         return res.status(200).json(chains)
     }catch(error){
         console.error("Execution error:", error)
@@ -15,7 +16,8 @@ export async function getChain(req,res){
 
 export async function postChain(req,res){
     try{
-        const {title, description, nodes, edges, userId} = req.body
+        const {title, description, nodes, edges} = req.body
+        const userId = req.userId
         
         if(!title  || !nodes || !edges || !userId) return res.status(400).json({message:"All fields are required"})
         
@@ -48,7 +50,8 @@ export async function getChainbyId(req,res){
 export async function updateChain(req,res){
     try{
         const id = req.params.id
-        const {title, description, nodes, edges, userId} = req.body
+        const {title, description, nodes, edges} = req.body
+        const userId = req.userId
 
         const chain = await prisma.promptChain.findUnique({ where: { id } });
         if (!chain) return res.status(404).json({ message: "PromptChain not found" });

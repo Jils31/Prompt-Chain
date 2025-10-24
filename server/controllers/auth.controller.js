@@ -4,7 +4,7 @@ import genToken from "../src/config/token.js";
 
 const prisma = new PrismaClient();
 
-export async function signIn(req, res) {
+export async function logIn(req, res) {
   try {
     const { email, password } = req.body;
     if (!email || !password)
